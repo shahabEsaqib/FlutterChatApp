@@ -1,3 +1,4 @@
+import 'package:first_app/helper/helperfunction.dart';
 import 'package:first_app/services/database.dart';
 import 'package:flutter/material.dart';
 
@@ -17,18 +18,18 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  bool isLoading = false;
-
+  final formkey = GlobalKey<FormState>();
   AuthMethod authMethod = new AuthMethod();
   DatabaseMethod databaseMethod = new DatabaseMethod();
-
-  final formkey = GlobalKey<FormState>();
+  
   TextEditingController userNameTextEditingController =
       new TextEditingController();
   TextEditingController emailTextEditingController =
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+      
+  bool isLoading = false;
 
   signMeUp() {
     if (formkey.currentState!.validate()) {
@@ -36,6 +37,8 @@ class _SignUpState extends State<SignUp> {
         "name": userNameTextEditingController.text,
         "email": emailTextEditingController.text
       };
+      HelperFunction.saveUserEmailSharedPrefrece(emailTextEditingController.text);
+      HelperFunction.saveUserEmailSharedPrefrece(userNameTextEditingController.text);
       setState(() {
         isLoading = true;
       });
@@ -43,13 +46,12 @@ class _SignUpState extends State<SignUp> {
       authMethod
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text)
-          .then((val) 
-          { 
-            // print("${val.uid}")
-            });
+          .then((val) {
+        print("${val.uid}");
+      });
 
       databaseMethod.uploadUserInfo(userInfoMap);
-
+      HelperFunction.saveUserLoggedInSharedPrefrece(true);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => ChatRoom()));
     }

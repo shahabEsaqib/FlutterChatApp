@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:first_app/helper/helperfunction.dart';
+import 'package:first_app/services/auth.dart';
+import 'package:first_app/services/database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:first_app/widgets/widgets.dart';
+
+import 'chatScreen.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggle;
@@ -12,6 +18,41 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final formkey = GlobalKey<FormState>();
+  TextEditingController emailTextEditingController =
+      new TextEditingController();
+  TextEditingController passwordTextEditingController =
+      new TextEditingController();
+  AuthMethod authMethod = new AuthMethod();
+  DatabaseMethod databaseMethod = new DatabaseMethod();
+  
+  bool isLooding = false;
+  QuerySnapshot? snapshotUserInfo;
+  signIn(){
+    if(formkey.currentState!.validate()){
+
+      HelperFunction.saveUserEmailSharedPrefrece(emailTextEditingController.text);
+      
+      setState(() {
+        isLooding=true;
+      });
+      databaseMethod.getUserByUserEmail(emailTextEditingController.text).then((val){
+        snapshotUserInfo = val;
+        HelperFunction.saveUserEmailSharedPrefrece(snapshotUserInfo!.docs[0]["name"]);
+      });
+      authMethod.signInWithEmailAndPassword(emailTextEditingController.text, passwordTextEditingController.text).then((value) {
+        if(value != null){
+          HelperFunction.saveUserLoggedInSharedPrefrece(true);
+          Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ChatRoom()));
+
+        }
+      });
+      
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +65,35 @@ class _SignInState extends State<SignIn> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                style: simpleTextStyle(),
-                decoration: textFieldInputDecoration("email"),
+              Form(
+                key: formkey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                    
+                      validator: (val) {
+                              return RegExp(
+                                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                      .hasMatch(val!)
+                                  ? null
+                                  : "please provide a valid emailid";
+                            },
+                      controller: emailTextEditingController,
+                      style: simpleTextStyle(),
+                      decoration: textFieldInputDecoration("email"),
+                    ),
+                  ],
+                ),
               ),
-              TextField(
+              TextFormField(
+                
+                obscureText: true,
+                            validator: (val) {
+                              return val!.length > 6
+                                  ? null
+                                  : "please provide password 6+ character";
+                            },
+                controller: passwordTextEditingController,
                 style: simpleTextStyle(),
                 decoration: textFieldInputDecoration("password"),
               ),
