@@ -41,7 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
       "chatRoomId":chatRoomId
     };
     DatabaseMethod().createChatRoom(chatRoomId, chatRoomMap);
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>ConversationScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>ConversationScreen(chatRoomId: chatRoomId,)));
     }else{
       print("you can not send messege to yourself");
     }
@@ -63,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
         : Container(
           height: MediaQuery.of(context).size.height*0.75,
           alignment: Alignment.bottomCenter,
-          child: Center(child: Text("Nothing to show",style: TextStyle(color: Colors.white),)),
+          child: Center(child: Text("Search by username",style: TextStyle(color: Colors.white),)),
         );
   }
 

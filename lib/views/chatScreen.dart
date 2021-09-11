@@ -22,6 +22,9 @@ class _ChatRoomState extends State<ChatRoom> {
   getUserInfo()async{
     // ignore: await_only_futures
     Constant.myName= await HelperFunction.getUserLoggedInSharedPrefrece().toString();
+    setState(() {
+      
+    });
   }
   @override
   Widget build(BuildContext context) {

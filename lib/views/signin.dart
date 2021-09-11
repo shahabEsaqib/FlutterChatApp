@@ -18,28 +18,32 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+
   final formkey = GlobalKey<FormState>();
+
   TextEditingController emailTextEditingController =
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+
   AuthMethod authMethod = new AuthMethod();
+
   DatabaseMethod databaseMethod = new DatabaseMethod();
   
   bool isLooding = false;
   QuerySnapshot? snapshotUserInfo;
   signIn(){
     if(formkey.currentState!.validate()){
-
+      databaseMethod.getUserByUserEmail(emailTextEditingController.text).then((val){
+        snapshotUserInfo = val;
       HelperFunction.saveUserEmailSharedPrefrece(emailTextEditingController.text);
-      
+      HelperFunction.saveUserEmailSharedPrefrece(snapshotUserInfo!.docs[0]["name"]);
+      }
+      );
       setState(() {
         isLooding=true;
       });
-      databaseMethod.getUserByUserEmail(emailTextEditingController.text).then((val){
-        snapshotUserInfo = val;
-        HelperFunction.saveUserEmailSharedPrefrece(snapshotUserInfo!.docs[0]["name"]);
-      });
+      
       authMethod.signInWithEmailAndPassword(emailTextEditingController.text, passwordTextEditingController.text).then((value) {
         if(value != null){
           HelperFunction.saveUserLoggedInSharedPrefrece(true);
@@ -107,21 +111,26 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               SizedBox(height: 16),
-              Container(
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(vertical: 20),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color(0xff007EF4),
-                        const Color(0xff2A75BC),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Text(
-                  "Sign In",
-                  style: mediumTextStyle(),
+              GestureDetector(
+                onTap: (){
+                  signIn();
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xff007EF4),
+                          const Color(0xff2A75BC),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Text(
+                    "Sign In",
+                    style: mediumTextStyle(),
+                  ),
                 ),
               ),
               SizedBox(height: 16),
