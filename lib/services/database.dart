@@ -19,15 +19,22 @@ class DatabaseMethod {
     FirebaseFirestore.instance.collection("user").add(userMap);
   }
 
-  createChatRoom(String chatRoomId ,chatRoomMap){
-    FirebaseFirestore.instance.collection("ChatRoom").doc(chatRoomId).set(chatRoomMap).catchError((e){
+  createChatRoom(String charRoomId ,chatRoomMap){
+    FirebaseFirestore.instance.collection("ChatRoom").doc(charRoomId).set(chatRoomMap).catchError((e){
       print(e.toString());
     });
   }
-  getConversationMessge(String chatRoomId , messageMap ){
-
-FirebaseFirestore.instance.collection("ChatRoom").doc(chatRoomId).collection("chats").add(messageMap).catchError((e){
+  addConversationMessage(String chatRoomId , messageMap ){
+  FirebaseFirestore.instance.collection("ChatRoom").doc(chatRoomId).collection("chats").add(messageMap).catchError((e){
   print(e.toString());
-});
+  });
   }
+
+  getConversationMessage(String chatRoomId) async{
+  return await FirebaseFirestore.instance.collection("ChatRoom").doc(chatRoomId).collection("chats").orderBy("time", descending: false).snapshots();
+  }
+  getChatRooms(String userName)async{
+    return await FirebaseFirestore.instance.collection("ChatRoom").where("user", arrayContains: userName).snapshots();
+  }
+
 }

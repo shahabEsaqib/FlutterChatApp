@@ -33,6 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   creatChatRoomAndStartConversation({String? username}){
+    print("helllllllllllllllo ${Constant.myName}");
     if(username != Constant.myName){
       String chatRoomId = getChatRoomId(username!, Constant.myName);
     List<String> users = [username ,Constant.myName];
@@ -55,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
             shrinkWrap: true,
             itemBuilder: (context, index) {
               return searchTile(
-                
+                  
                 username: searchsnapshot!.docs[index]['name'],
                 useremail: searchsnapshot!.docs[index]["email"],
               );
@@ -102,6 +103,14 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   
+  }
+
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
   }
 
   @override
@@ -162,11 +171,5 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
-getChatRoomId(String a , String b){
-  if(a.substring(0,1).codeUnitAt(0)>b.substring(0,1).codeUnitAt(0)){
-    return "$b\_$a";
-  }else{
-    return "$a\_$b";
-  }
-}
+
 

@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
         "email": emailTextEditingController.text
       };
       HelperFunction.saveUserEmailSharedPrefrece(emailTextEditingController.text);
-      HelperFunction.saveUserEmailSharedPrefrece(userNameTextEditingController.text);
+      HelperFunction.saveUserNameSharedPrefrece(userNameTextEditingController.text);
       setState(() {
         isLoading = true;
       });

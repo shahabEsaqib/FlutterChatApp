@@ -37,7 +37,7 @@ class _SignInState extends State<SignIn> {
       databaseMethod.getUserByUserEmail(emailTextEditingController.text).then((val){
         snapshotUserInfo = val;
       HelperFunction.saveUserEmailSharedPrefrece(emailTextEditingController.text);
-      HelperFunction.saveUserEmailSharedPrefrece(snapshotUserInfo!.docs[0]["name"]);
+      HelperFunction.saveUserNameSharedPrefrece(snapshotUserInfo!.docs[0]["name"]);
       }
       );
       setState(() {
